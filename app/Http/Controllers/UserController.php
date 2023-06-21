@@ -117,7 +117,7 @@ class UserController extends Controller
     public function signout(Request $request)
     {
         try {
-            dd($request->user());
+            // dd($request->user());
             if ($request->user()) {
                 $request->user()->currentAccessToken()->delete();
             }
@@ -235,7 +235,7 @@ class UserController extends Controller
             $sort_order = 'ASC';
 
 
-            $response = CommonHelper::filterEmptyValues($request->all());
+            // $response = CommonHelper::filterEmptyValues($request->all());
             extract($response, Response::HTTP_OK);
 
             //build query
