@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Users;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
@@ -43,7 +44,7 @@ class UserController extends Controller
 
             // create model
             $reqParams['password'] = Hash::make($reqParams['password']);
-            $user = User::create($reqParams);
+            $user = Users::create($reqParams);
 
             // store profile_photo if exist
 
@@ -88,7 +89,7 @@ class UserController extends Controller
             }
 
             // validate credentials
-            $user = User::where('email', $reqParams['email'])->first();
+            $user = Users::where('email', $reqParams['email'])->first();
             if (!$user) {
                 $response['error'][] = ['No user exist with this email'];
                 return response()->json($response, Response::HTTP_BAD_REQUEST);
@@ -162,7 +163,7 @@ class UserController extends Controller
                 return response()->json($response, Response::HTTP_BAD_REQUEST);
             }
 
-            $user = User::where('code', $reqParams['code'])->first();
+            $user = Users::where('code', $reqParams['code'])->first();
             if (!$user) {
                 $response['error'][] = ['User not found'];
                 return response()->json($response, Response::HTTP_BAD_REQUEST);
@@ -200,7 +201,7 @@ class UserController extends Controller
                 return response()->json($response, Response::HTTP_BAD_REQUEST);
             }
 
-            $user = User::where('email', $reqParams['email'])->first();
+            $user = Users::where('email', $reqParams['email'])->first();
             if (!$user) {
                 $response['error'][] = ['User not found'];
                 return response()->json($response, Response::HTTP_BAD_REQUEST);
@@ -239,7 +240,7 @@ class UserController extends Controller
             extract($response, Response::HTTP_OK);
 
             //build query
-            $query = User::orderBy($sort_by, $sort_order);
+            $query = Users::orderBy($sort_by, $sort_order);
 
             //Search query by name 
             if (array_key_exists('full_name', $reqParams['filter']))
