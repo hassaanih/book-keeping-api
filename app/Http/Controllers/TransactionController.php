@@ -82,7 +82,7 @@ class TransactionController extends Controller
 
         try{
             $transaction = new Transactions($reqParams);
-            $transaction->user_id = $request->user()->id;
+            $transaction->initiator_id = $request->user()->id;
             $transaction->transaction_status = TransactionStatusEnums::PENDING_FOR_APPROVAL;
             $transaction->save();
             $response['transcation'] = $transaction;

@@ -86,4 +86,8 @@ class Transactions extends Model
     public function manager(){
         return $this->hasOne(Users::class, 'id', 'manager_id');
     }
+
+    public function reciever(){
+        return $this->hasOne(Users::class, 'id', 'recieved_by_user_id');
+    }
 }

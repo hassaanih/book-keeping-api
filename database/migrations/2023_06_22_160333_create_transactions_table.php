@@ -18,6 +18,7 @@ class CreateTransactionsTable extends Migration
             $table->integer('initiator_id')->nullable(false);
             $table->integer('manager_id')->nullable(true);
             $table->float('balance', 8, 2)->nullable(false);
+            $table->float('converted_amount', 8, 2)->nullable(false);
             $table->text('currency')->nullable(false);
             $table->string('otp_for_transaction')->nullable(true);
             $table->enum('transaction_status', ['Pending for Approval', 'Approved', 'Completed', 'Rejected'])->default('Pending for Approval');
