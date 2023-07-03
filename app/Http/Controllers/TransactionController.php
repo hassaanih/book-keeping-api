@@ -32,7 +32,7 @@ class TransactionController extends Controller
 
         // build query
         // ->where('status', BookingStatus::ACTIVE)
-        $query = Transactions::with('initiator_id')->with('manager_id')->orderBy($sort_by, $sort_order);
+        $query = Transactions::with('initiator')->with('manager')->orderBy($sort_by, $sort_order);
 
         if ($page_size == -1) {
             $response['data'] = $query->select($select)->get();
@@ -164,6 +164,36 @@ class TransactionController extends Controller
 
             $transaction->manager_id = $request->user()->id;
             $transaction->transaction_status = TransactionStatusEnums::APPROVED;
+            $transaction->otp_for_transaction = rand(100000, 999999);
+            $transaction->update();
+            $response['transaction'] = $transaction;
+            return response()->json($response, Response::HTTP_OK);
+        }catch(Throwable $e){
+            $response['error']['general'] = ['Contact the admin to approve this transaction'];
+            Log::error($e->getMessage());
+            return response()->json($response, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function completeTransaction($id, Request $request)
+    {
+        $response = [];
+        
+        try{
+            $transaction = Transactions::find($id);
+            if(!$transaction){
+                $response['error']['general'] = ['No transaction found'];
+                return response()->json($response, Response::HTTP_BAD_REQUEST);
+            }
+
+            $transaction->recieved_by_user_id = $request->user()->id;
+            $transaction->transaction_status = TransactionStatusEnums::COMPLETED;
             $transaction->otp_for_transaction = rand(100000, 999999);
             $transaction->update();
             $response['transaction'] = $transaction;

@@ -30,5 +30,6 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::get('transaction/find/{id}', 'App\Http\Controllers\TransactionController@get');
     Route::get('transaction/find/otp/{otp}', 'App\Http\Controllers\TransactionController@findUsingOTP');
     Route::get('transaction/approve/{id}', 'App\Http\Controllers\TransactionController@approveTransaction');
+    Route::get('transaction/complete/{id}', 'App\Http\Controllers\TransactionController@completeTransaction');
 
 });

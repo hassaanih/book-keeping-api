@@ -37,7 +37,7 @@ class Transactions extends Model
      * @var array
      */
     protected $fillable = [
-        'initiator_id', 'manager_id', 'balance', 'currency', 'otp_for_transaction', 'transaction_status', 'reason_for_reject', 'recieved_by_user_id', 'created_at', 'updated_at'
+        'initiator_id', 'converted_amount', 'manager_id', 'balance', 'currency', 'otp_for_transaction', 'transaction_status', 'reason_for_reject', 'recieved_by_user_id', 'created_at', 'updated_at'
     ];
 
     /**
