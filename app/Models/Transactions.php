@@ -11,7 +11,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int    $created_at
  * @property int    $updated_at
  * @property float  $balance
- * @property string $currency
+ * @property float  $commision
+ * @property string $target_currency
+ * @property string $recieving_currency
  * @property string $otp_for_transaction
  * @property string $reason_for_reject
  */
@@ -37,7 +39,7 @@ class Transactions extends Model
      * @var array
      */
     protected $fillable = [
-        'initiator_id', 'converted_amount', 'manager_id', 'balance', 'currency', 'otp_for_transaction', 'transaction_status', 'reason_for_reject', 'recieved_by_user_id', 'created_at', 'updated_at'
+        'initiator_id', 'commision', 'target_currency', 'recieving_currency', 'converted_amount', 'manager_id', 'balance', 'otp_for_transaction', 'transaction_status', 'reason_for_reject', 'recieved_by_user_id', 'created_at', 'updated_at'
     ];
 
     /**
@@ -55,7 +57,7 @@ class Transactions extends Model
      * @var array
      */
     protected $casts = [
-        'initiator_id' => 'int', 'manager_id' => 'int', 'balance' => 'double', 'currency' => 'string', 'otp_for_transaction' => 'string', 'reason_for_reject' => 'string', 'recieved_by_user_id' => 'int', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
+        'initiator_id' => 'int', 'manager_id' => 'int', 'balance' => 'double', 'commision' => 'double', 'target_currency' => 'string', 'recieving_currency' => 'string', 'otp_for_transaction' => 'string', 'reason_for_reject' => 'string', 'recieved_by_user_id' => 'int', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
     ];
 
     /**

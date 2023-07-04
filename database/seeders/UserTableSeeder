@@ -1,0 +1,57 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Enums\UserTypeEnums;
+use Illuminate\Database\Seeder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Hash;
+
+use App\Models\User;
+use App\Models\Users;
+
+class UserTableSeeder extends Seeder
+{
+    /**
+     * Seed the application's database.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        Model::unguard();
+
+        Users::truncate();
+
+        $users = array(
+            [
+                'id' => 1,
+                'full_name' => 'Manager 1',
+                'email' => 'manager1@mail.com',
+                'user_type_id' => UserTypeEnums::MANAGER,
+                'password' => Hash::make('password'),
+            ],
+            [
+                'id' => 1,
+                'full_name' => 'Agent 1',
+                'email' => 'agent1@mail.com',
+                'user_type_id' => UserTypeEnums::AGENT,
+                'password' => Hash::make('password'),
+            ],
+            [
+                'id' => 1,
+                'full_name' => 'Agent 2',
+                'email' => 'agent2@mail.com',
+                'user_type_id' => UserTypeEnums::AGENT,
+                'password' => Hash::make('password'),
+            ],
+        );
+
+        // Loop through each user above and create the record for them in the database
+        foreach ($users as $user) {
+            Users::insert($user);
+        }
+
+        Model::reguard();
+    }
+}

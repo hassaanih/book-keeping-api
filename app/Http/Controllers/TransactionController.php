@@ -6,6 +6,7 @@ use App\Enums\TransactionStatusEnums;
 use App\Models\Transactions;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Throwable;
@@ -32,7 +33,7 @@ class TransactionController extends Controller
 
         // build query
         // ->where('status', BookingStatus::ACTIVE)
-        $query = Transactions::with('initiator')->with('manager')->orderBy($sort_by, $sort_order);
+        $query = Transactions::with('initiator')->with('manager')->where('initiator_id', Auth::user()->id)->orderBy($sort_by, $sort_order);
 
         if ($page_size == -1) {
             $response['data'] = $query->select($select)->get();
@@ -65,12 +66,14 @@ class TransactionController extends Controller
 
         $validatorRules = [
             'balance' => 'required',
-            'currency' => 'required',
+            'target_currency' => 'required',
+            'recieving_currency' => 'required',
         ];
 
         $validationMessages = [
             'balance.required' => 'Balance is required',
-            'currency.required' => 'Currency is required'
+            'target_currency.required' => 'Target Currency is required',
+            'recieving_currency.required' => 'Target Currency is required',
         ];
 
         $validator = Validator::make($reqParams, $validatorRules, $validationMessages);
@@ -84,6 +87,7 @@ class TransactionController extends Controller
             $transaction = new Transactions($reqParams);
             $transaction->initiator_id = $request->user()->id;
             $transaction->transaction_status = TransactionStatusEnums::PENDING_FOR_APPROVAL;
+            $transaction->otp_for_transaction = rand(100000, 999999);
             $transaction->save();
             $response['transcation'] = $transaction;
             return response()->json($response, Response::HTTP_OK);
@@ -164,7 +168,6 @@ class TransactionController extends Controller
 
             $transaction->manager_id = $request->user()->id;
             $transaction->transaction_status = TransactionStatusEnums::APPROVED;
-            $transaction->otp_for_transaction = rand(100000, 999999);
             $transaction->update();
             $response['transaction'] = $transaction;
             return response()->json($response, Response::HTTP_OK);
