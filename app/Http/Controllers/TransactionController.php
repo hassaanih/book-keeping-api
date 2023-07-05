@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\TransactionStatusEnums;
+use App\Enums\UserTypeEnums;
 use App\Models\Transactions;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -33,7 +34,11 @@ class TransactionController extends Controller
 
         // build query
         // ->where('status', BookingStatus::ACTIVE)
-        $query = Transactions::with('initiator')->with('manager')->where('initiator_id', Auth::user()->id)->orderBy($sort_by, $sort_order);
+        if(Auth::user()->user_type_id == UserTypeEnums::AGENT){
+            $query = Transactions::with('initiator')->with('manager')->where('initiator_id', Auth::user()->id)->orderBy($sort_by, $sort_order);
+        }else{
+            $query = Transactions::with('initiator')->with('manager')->orderBy($sort_by, $sort_order);
+        }
 
         if ($page_size == -1) {
             $response['data'] = $query->select($select)->get();
@@ -89,7 +94,7 @@ class TransactionController extends Controller
             $transaction->transaction_status = TransactionStatusEnums::PENDING_FOR_APPROVAL;
             $transaction->otp_for_transaction = rand(100000, 999999);
             $transaction->save();
-            $response['transcation'] = $transaction;
+            $response['transaction'] = $transaction;
             return response()->json($response, Response::HTTP_OK);
         }catch(Throwable $e){
             Log::error($e->getMessage());
