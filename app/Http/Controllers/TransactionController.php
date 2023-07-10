@@ -140,7 +140,7 @@ class TransactionController extends Controller
     {
         $response = [];
         try{
-            $transaction = Transactions::with('initiator')->where('otp_for_transaction', $otp)->first();
+            $transaction = Transactions::with('initiator')->with('manager')->where('otp_for_transaction', $otp)->first();
             if(!$transaction){
                 $response['error']['general'] = ['Cannot find the requested Transaction'];
                 return response()->json($response, Response::HTTP_BAD_REQUEST);

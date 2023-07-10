@@ -30,10 +30,9 @@ class UserController extends Controller
             ];
 
             $validationRules = [
-                'full_name' => 'required',
-                'email' => 'required|unique:user,email|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
+                'name' => 'required',
+                'email' => 'required|unique:users,email|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
                 'password' => 'required',
-                'c_password' => 'required|same:password',
             ];
 
             $validator = Validator::make($reqParams, $validationRules, $validationMessages);
@@ -49,6 +48,55 @@ class UserController extends Controller
             // store profile_photo if exist
 
             $user->save();
+            // send response
+            $response = [];
+            $response['user'] = $user;
+
+            return response()->json($response, Response::HTTP_OK);
+        } catch (Throwable $e) {
+            Log::error($e);
+            return response()->json(['errors' => [$e->getMessage()]], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Create user API
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {
+        try {
+            $reqParams = array_filter($request->all());
+
+            $validationMessages = [
+                'email.required' => 'Email is required.',
+                'email.unique' => 'Email is already taken.',
+                'email.regex' => 'Email format is invalid.',
+            ];
+
+            $validationRules = [
+                'id' => 'required',
+                'name' => 'required',
+                'email' => 'required|unique:users,email|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
+                'password' => 'required',
+            ];
+
+            $validator = Validator::make($reqParams, $validationRules, $validationMessages);
+            if ($validator->fails()) {
+                $response['error'] = $validator->errors();
+                return response()->json($response, Response::HTTP_BAD_REQUEST);
+            }
+
+            // create model
+            if(array_key_exists('password', $reqParams)){
+                $reqParams['password'] = Hash::make($reqParams['password']);
+            }
+            $user = Users::find($reqParams['id']);
+
+            // store profile_photo if exist
+
+            $user->update();
             // send response
             $response = [];
             $response['user'] = $user;
@@ -219,44 +267,41 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function findAll(Request $request)
+    public function list(Request $request)
     {
-        try {
-
-            $reqParams = $request->json()->all();
-
-            $select = [
-                'id',
-                'full_name'
-            ];
 
             $page = 1;
-            $page_size = 10;
-            $sort_by = 'full_name';
-            $sort_order = 'ASC';
+        $page_size = 10;
 
+        $sort_by = 'created_at';
+        $select = '*';
 
-            // $response = CommonHelper::filterEmptyValues($request->all());
-            extract($response, Response::HTTP_OK);
+        $sort_order = 'desc';
+        $filters = null;
+        $response = array_filter($request->all());
+        extract(array_filter($request->all()));
 
-            //build query
-            $query = Users::orderBy($sort_by, $sort_order);
+        // build query
+        // ->where('status', BookingStatus::ACTIVE)
+        $query = Users::orderBy($sort_by, $sort_order);
 
-            //Search query by name 
-            if (array_key_exists('full_name', $reqParams['filter']))
-                $query->where('full_name', 'LIKE', '%' . $reqParams['filter']['full_name'] . '%');
-
-            if ($page_size == -1) {
-                $response['data'] = $query->select($select)->get();
-                return response()->json($response, Response::HTTP_OK);
-            }
-
-            $response = array_merge($response, $query->paginate($page_size, $select, 'page', $page)->toArray());
-
+        if ($page_size == -1) {
+            $response['data'] = $query->select($select)->get();
             return response()->json($response, Response::HTTP_OK);
-        } catch (Throwable $e) {
-            Log::error($e);
-            return response()->json(['general' => [$e->getMessage()]], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
+        return $query->paginate($page_size, $select, $page);
+    }
+
+    public function find($id){
+        $response = [];
+
+        $user = Users::find($id);
+        if(!$user){
+            $response['error']['general'] = ['No User found'];
+            return response()->json($response, Response::HTTP_BAD_REQUEST);
+        } 
+        $response['user'] = $user;
+        return response()->json($response, Response::HTTP_OK);
     }
 }

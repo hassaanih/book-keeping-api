@@ -10,6 +10,8 @@ use Laravel\Sanctum\HasApiTokens;
 /**
  * @property string $name
  * @property string $email
+ * @property string $contact_number
+ * @property float  $assigned_balance
  * @property string $password
  * @property string $remember_token
  * @property int    $email_verified_at
@@ -39,7 +41,7 @@ class Users extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'email_verified_at', 'user_type_id', 'password', 'remember_token', 'created_at', 'updated_at'
+        'name', 'email', 'email_verified_at', 'user_type_id', 'password', 'remember_token', 'created_at', 'updated_at', 'contact_number', 'assigned_number'
     ];
 
     /**
@@ -48,7 +50,7 @@ class Users extends Model
      * @var array
      */
     protected $hidden = [
-        
+        'password'
     ];
 
     /**
@@ -57,7 +59,7 @@ class Users extends Model
      * @var array
      */
     protected $casts = [
-        'name' => 'string', 'email' => 'string', 'email_verified_at' => 'timestamp', 'password' => 'string', 'remember_token' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
+        'name' => 'string', 'email' => 'string', 'email_verified_at' => 'timestamp', 'password' => 'string', 'remember_token' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp', 'contact_number' => 'string', 'assigned_number' => 'float'
     ];
 
     /**

@@ -32,4 +32,10 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::get('transaction/approve/{id}', 'App\Http\Controllers\TransactionController@approveTransaction');
     Route::get('transaction/complete/{id}', 'App\Http\Controllers\TransactionController@completeTransaction');
 
+    Route::get('user/list', 'App\Http\Controllers\UserController@list');
+    Route::post('user/create', 'App\Http\Controllers\UserController@create');
+    Route::post('user/update', 'App\Http\Controllers\UserController@update');
+    Route::get('user/find/{id}', 'App\Http\Controllers\UserController@find');
+
+
 });
