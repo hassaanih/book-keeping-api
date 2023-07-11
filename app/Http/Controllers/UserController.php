@@ -78,8 +78,7 @@ class UserController extends Controller
             $validationRules = [
                 'id' => 'required',
                 'name' => 'required',
-                'email' => 'required|unique:users,email|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
-                'password' => 'required',
+                'email' => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
             ];
 
             $validator = Validator::make($reqParams, $validationRules, $validationMessages);
@@ -96,7 +95,7 @@ class UserController extends Controller
 
             // store profile_photo if exist
 
-            $user->update();
+            $user->update($reqParams);
             // send response
             $response = [];
             $response['user'] = $user;

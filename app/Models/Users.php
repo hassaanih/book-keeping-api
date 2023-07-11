@@ -41,7 +41,7 @@ class Users extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'email_verified_at', 'user_type_id', 'password', 'remember_token', 'created_at', 'updated_at', 'contact_number', 'assigned_number'
+        'name', 'email', 'email_verified_at', 'user_type_id', 'password', 'remember_token', 'created_at', 'updated_at', 'contact_number', 'assigned_balance'
     ];
 
     /**
@@ -59,7 +59,7 @@ class Users extends Model
      * @var array
      */
     protected $casts = [
-        'name' => 'string', 'email' => 'string', 'email_verified_at' => 'timestamp', 'password' => 'string', 'remember_token' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp', 'contact_number' => 'string', 'assigned_number' => 'float'
+        'name' => 'string', 'email' => 'string', 'email_verified_at' => 'timestamp', 'password' => 'string', 'remember_token' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp', 'contact_number' => 'string', 'assigned_balance' => 'float'
     ];
 
     /**
