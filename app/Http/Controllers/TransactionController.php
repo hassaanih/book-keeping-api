@@ -220,23 +220,27 @@ class TransactionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         $reqParams = $request->all();
         $response = [];
 
         $validatorRules = [
             'id' => 'required',
-            'user_id' => 'required',
+            'initiator_id' => 'required',
             'balance' => 'required',
-            'currency' => 'required',
+            'contact_number' => 'required',
+            'target_currency' => 'required',
+            'recieving_currency' => 'required'
         ];
 
         $validationMessages = [
             'id' => 'Transaction Id is missing',
-            'user_id.required' => 'User is required',
+            'initiator_id.required' => 'Initaitor is required',
             'balance.required' => 'Balance is required',
-            'currency.required' => 'Currency is required'
+            'contact_number.required' => 'Contact Number is required.',
+            'recieving_currency.required' => 'Currency is required',
+            'target_currency.required' => 'Currency is required'
         ];
 
         $validator = Validator::make($reqParams, $validatorRules, $validationMessages);
