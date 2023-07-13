@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LookupCurrencies;
 use App\Models\User;
+use App\Models\UserCurrencyCredit;
 use App\Models\Users;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -302,5 +304,48 @@ class UserController extends Controller
         } 
         $response['user'] = $user;
         return response()->json($response, Response::HTTP_OK);
+    }
+
+    public function addCredit(Request $request){
+        $response = [];
+
+        $reqParams = $request->json()->all();
+
+        $validationRules = [
+            'id' => 'required',
+            'credit' => 'required',
+            'currency_id' => 'required'
+        ];
+
+        $validationMessages = [
+            'id.required' => 'user not found',
+            'credit.required' => 'Credit Balance is required',
+            'currency_id.required' => 'Currency is required'
+        ];
+
+        $validator = Validator::make($reqParams, $validationRules, $validationMessages);
+
+        if ($validator->fails()) {
+            $response['error'] = $validator->errors();
+            return response()->json($response, Response::HTTP_BAD_REQUEST);
+        }
+
+        try{
+            $currency = LookupCurrencies::where('id', $reqParams['currency_id'])->first();
+            $creditBalance = UserCurrencyCredit::where('user_id', $reqParams['id'])->where('currency_id', $reqParams['currency_id'])->first();
+            if(!$creditBalance){
+                $response['error']['general'] = ['No Currency Credit found'];
+                return response()->json($response, Response::HTTP_BAD_REQUEST);
+            }
+            $creditBalance->currency_id_name = $currency->name . ' ' . $currency->code;
+            $creditBalance->credit_balance = floatval($creditBalance->credit_balance) + floatval($reqParams['credit']);
+            $creditBalance->update();
+            $response['credit_balance'] = $creditBalance;
+            return response()->json($response, Response::HTTP_OK);
+        }catch(Throwable $e){
+            Log::error($e->getMessage());
+            $response['error']['general'] = $e->getMessage();
+            return response()->json($response, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

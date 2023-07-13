@@ -35,7 +35,8 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::get('user/list', 'App\Http\Controllers\UserController@list');
     Route::post('user/create', 'App\Http\Controllers\UserController@create');
     Route::post('user/update', 'App\Http\Controllers\UserController@update');
+    Route::post('user/add/credit', 'App\Http\Controllers\UserController@addCredit');
     Route::get('user/find/{id}', 'App\Http\Controllers\UserController@find');
 
-
+    Route::get('dashboard/get', 'App\Http\Controllers\DashboardController@getDashboardData');
 });
