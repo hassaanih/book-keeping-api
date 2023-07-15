@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\TransactionStatusEnums;
 use App\Enums\UserTypeEnums;
 use App\Models\Transactions;
+use App\Models\UserCurrencyCredit;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -71,14 +72,14 @@ class TransactionController extends Controller
 
         $validatorRules = [
             'balance' => 'required',
-            'target_currency' => 'required',
-            'recieving_currency' => 'required',
+            'target_currency_id' => 'required',
+            'recieving_currency_id' => 'required',
         ];
 
         $validationMessages = [
             'balance.required' => 'Balance is required',
-            'target_currency.required' => 'Target Currency is required',
-            'recieving_currency.required' => 'Target Currency is required',
+            'target_currency_id.required' => 'Target Currency is required',
+            'recieving_currency_id.required' => 'Target Currency is required',
         ];
 
         $validator = Validator::make($reqParams, $validatorRules, $validationMessages);
@@ -204,6 +205,11 @@ class TransactionController extends Controller
             $transaction->transaction_status = TransactionStatusEnums::COMPLETED;
             $transaction->otp_for_transaction = rand(100000, 999999);
             $transaction->update();
+
+            $userCredit = UserCurrencyCredit::where('user_id', Auth::user()->id)->where('currency_id', $transaction->recieving_currency_id)->first();
+            $userCredit->credit_balance = $userCredit->credit_balance - $transaction->balance;
+            $userCredit->update();
+            
             $response['transaction'] = $transaction;
             return response()->json($response, Response::HTTP_OK);
         }catch(Throwable $e){
@@ -230,8 +236,8 @@ class TransactionController extends Controller
             'initiator_id' => 'required',
             'balance' => 'required',
             'contact_number' => 'required',
-            'target_currency' => 'required',
-            'recieving_currency' => 'required'
+            'target_currency_id' => 'required',
+            'recieving_currency_id' => 'required'
         ];
 
         $validationMessages = [
@@ -239,8 +245,8 @@ class TransactionController extends Controller
             'initiator_id.required' => 'Initaitor is required',
             'balance.required' => 'Balance is required',
             'contact_number.required' => 'Contact Number is required.',
-            'recieving_currency.required' => 'Currency is required',
-            'target_currency.required' => 'Currency is required'
+            'recieving_currency_id.required' => 'Currency is required',
+            'target_currency_id.required' => 'Currency is required'
         ];
 
         $validator = Validator::make($reqParams, $validatorRules, $validationMessages);

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\LookupCurrencies;
+use App\Models\Notiifications;
 use App\Models\User;
 use App\Models\UserCurrencyCredit;
 use App\Models\Users;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -346,6 +348,19 @@ class UserController extends Controller
             Log::error($e->getMessage());
             $response['error']['general'] = $e->getMessage();
             return response()->json($response, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function getNotification(Request $request){
+        $response = [];
+
+        try{
+            $notification = Notiifications::where('to_user_id', Auth::user()->id)->orderBy('created_at', 'desc')->get();
+            $response['notification'] = $notification;
+            return response()->json($response, Response::HTTP_OK);
+        }catch(Throwable $e){
+            Log::error($e->getMessage());
+            return response()->json(['error'=>'Server error'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
