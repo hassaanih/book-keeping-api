@@ -355,7 +355,7 @@ class UserController extends Controller
         $response = [];
 
         try{
-            $notification = Notiifications::where('to_user_id', Auth::user()->id)->orderBy('created_at', 'desc')->get();
+            $notification = Notiifications::where('to_user_id', Auth::user()->id)->where('is_read', false)->orderBy('created_at', 'desc')->get();
             $response['notification'] = $notification;
             return response()->json($response, Response::HTTP_OK);
         }catch(Throwable $e){

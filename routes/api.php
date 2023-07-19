@@ -31,17 +31,20 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::get('transaction/find/otp/{otp}', 'App\Http\Controllers\TransactionController@findUsingOTP');
     Route::get('transaction/approve/{id}', 'App\Http\Controllers\TransactionController@approveTransaction');
     Route::get('transaction/complete/{id}', 'App\Http\Controllers\TransactionController@completeTransaction');
-
-    Route::get('user/list', 'App\Http\Controllers\UserController@list');
-    Route::post('user/create', 'App\Http\Controllers\UserController@create');
-    Route::post('user/update', 'App\Http\Controllers\UserController@update');
-    Route::post('user/add/credit', 'App\Http\Controllers\UserController@addCredit');
-    Route::get('user/find/{id}', 'App\Http\Controllers\UserController@find');
    
     Route::get('notification/get', 'App\Http\Controllers\UserController@getNotification');
+    Route::get('notification/read', 'App\Http\Controllers\NotificationsController@markAsRead');
 
     Route::get('dashboard/get', 'App\Http\Controllers\DashboardController@getDashboardData');
 
     Route::get('currency/get/all', 'App\Http\Controllers\LookupDataController@getAllCurrency');
 
+});
+
+Route::group(['middleware' => ['auth:sanctum', 'authorization']], function(){
+    Route::get('user/list', 'App\Http\Controllers\UserController@list');
+    Route::post('user/create', 'App\Http\Controllers\UserController@create');
+    Route::post('user/update', 'App\Http\Controllers\UserController@update');
+    Route::post('user/add/credit', 'App\Http\Controllers\UserController@addCredit');
+    Route::get('user/find/{id}', 'App\Http\Controllers\UserController@find');
 });

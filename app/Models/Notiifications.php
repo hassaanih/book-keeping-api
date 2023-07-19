@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int    $created_at
  * @property int    $updated_at
  * @property string $title
+ * @property boolean $is_read
  */
 class Notiifications extends Model
 {
@@ -33,7 +34,7 @@ class Notiifications extends Model
      * @var array
      */
     protected $fillable = [
-        'from_user_id', 'to_user_id', 'title', 'created_at', 'updated_at'
+        'from_user_id', 'to_user_id', 'is_read', 'title', 'created_at', 'updated_at'
     ];
 
     /**
@@ -51,7 +52,7 @@ class Notiifications extends Model
      * @var array
      */
     protected $casts = [
-        'from_user_id' => 'int', 'to_user_id' => 'int', 'title' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
+        'from_user_id' => 'int', 'to_user_id' => 'int', 'title' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp', 'is_read' => 'boolean'
     ];
 
     /**
