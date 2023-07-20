@@ -315,13 +315,13 @@ class UserController extends Controller
 
         $validationRules = [
             'id' => 'required',
-            'credit' => 'required',
+            'credit_balance' => 'required',
             'currency_id' => 'required'
         ];
 
         $validationMessages = [
             'id.required' => 'user not found',
-            'credit.required' => 'Credit Balance is required',
+            'credit_balance.required' => 'Credit Balance is required',
             'currency_id.required' => 'Currency is required'
         ];
 
@@ -340,7 +340,7 @@ class UserController extends Controller
                 return response()->json($response, Response::HTTP_BAD_REQUEST);
             }
             $creditBalance->currency_id_name = $currency->name . ' ' . $currency->code;
-            $creditBalance->credit_balance = floatval($creditBalance->credit_balance) + floatval($reqParams['credit']);
+            $creditBalance->credit_balance = floatval($creditBalance->credit_balance) + floatval($reqParams['credit_balance']);
             $creditBalance->update();
             $response['credit_balance'] = $creditBalance;
             return response()->json($response, Response::HTTP_OK);
