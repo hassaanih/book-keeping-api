@@ -36,9 +36,9 @@ class TransactionController extends Controller
         // build query
         // ->where('status', BookingStatus::ACTIVE)
         if(Auth::user()->user_type_id == UserTypeEnums::AGENT){
-            $query = Transactions::with('initiator')->with('manager')->where('initiator_id', Auth::user()->id)->orderBy($sort_by, $sort_order);
+            $query = Transactions::with('initiator')->with('manager')->with('targetCurrency')->with('recievingCurrency')->where('initiator_id', Auth::user()->id)->orderBy($sort_by, $sort_order);
         }else{
-            $query = Transactions::with('initiator')->with('manager')->orderBy($sort_by, $sort_order);
+            $query = Transactions::with('initiator')->with('manager')->with('targetCurrency')->with('recievingCurrency')->orderBy($sort_by, $sort_order);
         }
 
         if ($page_size == -1) {
