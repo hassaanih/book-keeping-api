@@ -83,4 +83,7 @@ class Users extends Model
     // Functions ...
 
     // Relations ...
+    public function userCurrencyCredit(){
+        return $this->hasMany(UserCurrencyCredit::class, 'user_id', 'id');
+    }
 }

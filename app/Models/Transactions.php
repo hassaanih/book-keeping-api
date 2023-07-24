@@ -93,4 +93,12 @@ class Transactions extends Model
     public function reciever(){
         return $this->hasOne(Users::class, 'id', 'recieved_by_user_id');
     }
+
+    public function targetCurrency(){
+        return $this->hasOne(LookupCurrencies::class, 'id', 'target_currency_id');
+    }
+
+    public function recievingCurrency(){
+        return $this->hasOne(LookupCurrencies::class, 'id', 'recieving_currency_id');
+    }
 }

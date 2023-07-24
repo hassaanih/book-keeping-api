@@ -299,7 +299,7 @@ class UserController extends Controller
     public function find($id){
         $response = [];
 
-        $user = Users::find($id);
+        $user = Users::with('userCurrencyCredit')->find($id);
         if(!$user){
             $response['error']['general'] = ['No User found'];
             return response()->json($response, Response::HTTP_BAD_REQUEST);
