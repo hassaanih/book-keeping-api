@@ -141,20 +141,18 @@ class UserController extends Controller
 
             // validate credentials
             $user = Users::where('email', $reqParams['email'])->first();
-            if (!$user) {
-                $response['error'][] = ['No user exist with this email'];
+            if (!$user || !Hash::check($reqParams['password'], $user->password)) {
+                $response['error'] = [
+                    'general' => ['Invalid username/password combination'],
+                ];
                 return response()->json($response, Response::HTTP_BAD_REQUEST);
             }
-
-            if (($reqParams['email'] == $user->email) && (Hash::check($reqParams['password'], $user->password))) {
-                $response['user'] = $user;
-                $access_token = $user->createToken('WEB')->plainTextToken;
-                $response['user']['access_token']= $access_token;
-                return response()->json($response, Response::HTTP_OK);
-            } else {
-                $response['error']['general'] = ['Invalid email or password'];
-                return response()->json($response, Response::HTTP_BAD_REQUEST);
-            }
+            
+            $response['user'] = $user;
+            $access_token = $user->createToken('WEB')->plainTextToken;
+            $response['user']['access_token']= $access_token;
+            return response()->json($response, Response::HTTP_OK);
+            
         } catch (Throwable $e) {
             Log::error($e);
             return response()->json(['general' => [$e->getMessage()]], Response::HTTP_INTERNAL_SERVER_ERROR);
